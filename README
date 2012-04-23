@@ -1,0 +1,23 @@
+= NNTP Mailing List Bridge =
+
+Data for scripts is stored in either /etc/nntp-maillist/ (if accesible) or else in <install-dir>/etc/
+
+newmail.rb is designed to be used as a Mail Deliver Agent, either directly, or piped from an alias, or piped from procmail, like so:
+
+{{{
+:0w
+| /usr/bin/ruby /usr/share/nntp-maillist/newmail.rb nntp://news.example.com/ news.example.com
+EXITCODE=$?
+}}}
+
+sendsubs.rb is designed to be used from a cronjob that runs it once for each group for which there are subscribers, running a command like:
+
+{{{
+for GROUP in /etc/nntp-maillist/*; do
+	ruby sendsubs.rb nntp://news.example.com/"$GROUP" news.example.com
+done
+}}}
+
+== Dependencies ==
+
+* http://github.com/mikel/mail
