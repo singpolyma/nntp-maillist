@@ -44,7 +44,7 @@ def confirm(command, frm, mail)
 		true
 	else
 		token = md5(rand.to_s + Time.now.to_s + frm)
-		open(sf) {|fh|
+		open(sf,'w') {|fh|
 			fh.puts token
 		}
 
