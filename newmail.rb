@@ -28,6 +28,14 @@ def md5(s)
 	Digest::MD5.hexdigest(s)
 end
 
+def word_wrap(text)
+	line_width = 74
+
+	text.split("\n").collect do |line|
+		line.length > line_width ? line.gsub(%r((.{1,#{line_width}})(\s+|$)), "\\1\n").strip : line
+	end * "\n"
+end
+
 def confirm(command, frm, mail)
 	sf = ETC + '/' + command + md5(frm) + md5(mail[:newsgroups].decoded)
 	token = File.exists?(sf) ? (open(sf).read rescue nil) : nil
@@ -45,7 +53,7 @@ def confirm(command, frm, mail)
 				from (group + '---' + command + '@' + ARGV[1])
 				to frm
 				subject "Confirm #{command} to #{group} (#{token})"
-				body "This is an email to confirm that you want to #{command} to the #{group} group.\n\nIf you did not request this, you can safely ignore this email.  Otherwise, simply reply to this email and ensure that the following token is in the body of your reply:\n\n#{token}\n\n"
+				body word_wrap("This is an email to confirm that you want to #{command} to the #{group} group.\n\nIf you did not request this, you can safely ignore this email.  Otherwise, simply reply to this email and ensure that the following token is in the body of your reply:\n\n#{token}\n")
 			end
 			confirmail.delivery_method :sendmail
 			confirmail.deliver!
