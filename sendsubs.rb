@@ -64,7 +64,7 @@ mails.each do |mail|
 	mail[:list_archive] = "<#{ARGV[0]}>"
 	mail[:list_subscribe] = "<mailto:#{group}---subscribe@#{ARGV[1]}>"
 	mail[:list_unsubscribe] = "<mailto:#{group}---unsubscribe@#{ARGV[1]}>"
-	mail[:to] = "#{group}@#{ARGV[1]}"
+	mail[:to] = "#{group}@#{ARGV[1]}" unless mail[:to]
 	mail[:sender] = "#{group}@#{ARGV[1]}"
 	mail[:return_path] = "#{group}@#{ARGV[1]}"
 	def mail.destinations
