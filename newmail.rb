@@ -57,12 +57,12 @@ end
 
 unless ARGV[0]
 	warn 'You must specify an NNTP server!'
-	exit 1
+	exit 64
 end
 
 unless ARGV[1]
 	warn 'You must specify an FQDN!'
-	exit 1
+	exit 64
 end
 
 if File.writable?('/etc/nntp-maillist/')
@@ -82,7 +82,7 @@ end
 
 unless to
 	warn 'No recipient address found!'
-	exit 1
+	exit 67
 end
 
 newsgroup, _ = to.split(/@/)
@@ -118,13 +118,17 @@ case command
 	when nil
 		SimpleProtocol.new(:uri => ARGV[0], :default_port => 119) { |nntp|
 			nntp.post
-			raise 'Error sending POST command to server.' unless nntp.gets.split(' ')[0] == '340'
+			unless nntp.gets.split(' ')[0] == '340'
+				warn 'Error sending POST command to server.'
+				exit 75
+			end
 			nntp.send_multiline(mail.to_s)
 			unless (m = nntp.gets).split(' ')[0] == '240'
-				raise 'Error POSTing article: ' + m
+				warn 'Error POSTing article: ' + m
+				exit 75
 			end
 		}
 	else
 		warn 'unknown command'
-		exit 1
+		exit 65
 end
